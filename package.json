@@ -1,0 +1,52 @@
+{
+  "name": "react-charts-d3",
+  "version": "1.0.0",
+  "description": "React charts made with D3",
+  "main": "index.js",
+  "scripts": {
+    "build": "npm install && webpack --mode production --progress",
+    "dev": "webpack --watch --display-modules",
+    "lint": "eslint src/",
+    "server": "node index.js",
+    "start": "npm run build && node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch": "webpack --watch"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/rahulkadukar/react-charts-d3.git"
+  },
+  "author": "Rahul Kadukar",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/rahulkadukar/react-charts-d3/issues"
+  },
+  "homepage": "https://github.com/rahulkadukar/react-charts-d3#readme",
+  "devDependencies": {
+    "@babel/cli": "^7.10.3",
+    "@babel/core": "^7.10.3",
+    "@babel/plugin-proposal-optional-chaining": "^7.10.3",
+    "@babel/preset-env": "^7.10.3",
+    "@babel/preset-react": "^7.10.1",
+    "babel-loader": "^8.0.6",
+    "css-loader": "^1.0.1",
+    "eslint": "^6.8.0",
+    "eslint-plugin-react": "^7.20.0",
+    "style-loader": "^0.23.1",
+    "terser-webpack-plugin": "^3.0.6",
+    "webpack": "^4.43.0",
+    "webpack-bundle-analyzer": "^3.8.0",
+    "webpack-cli": "^3.3.12",
+    "webpack-merge": "^4.2.2"
+  },
+  "dependencies": {
+    "bunyan": "^1.8.13",
+    "bunyan-middleware": "^1.0.0",
+    "compression": "^1.7.4",
+    "d3": "^5.16.0",
+    "react": "^16.12.0",
+    "react-dom": "^16.12.0",
+    "react-router-dom": "^5.2.0",
+    "styled-components": "^4.4.1"
+  }
+}

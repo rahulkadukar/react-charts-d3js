@@ -1,0 +1,8 @@
+body {
+  font-family: 'Roboto', Arial, Helvetica, sans-serif;
+  background-color: red;
+}
+
+#root {
+  height: 100%;
+}
