@@ -6,3 +6,7 @@ body {
 #root {
   height: 100%;
 }
+
+div.d3-class {
+  height: auto;
+}
