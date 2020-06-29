@@ -3,12 +3,14 @@ import { max as d3max } from 'd3-array'
 import {
   axisBottom as d3axisBottom,
   axisLeft as d3axisLeft } from 'd3-axis'
+import { easeLinear as d3easeLinear } from 'd3-ease'
 import {
   scaleBand as d3scaleBand,
   scaleLinear as d3scaleLinear,
   scaleOrdinal as d3scaleOrdinal } from 'd3-scale'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import { select as d3select } from 'd3-selection'
+import { transition } from "d3-transition"
 
 const BarChart = (props) => {
   console.log(props)
@@ -58,16 +60,23 @@ const BarChart = (props) => {
       .style("font-size", "1em")
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
 
-    g.attr("width", innerWidth)
+    const allBars = g.attr("width", innerWidth)
       .attr("height", innerHeight)
       .selectAll("rect").data(data)
-      .enter()
-      .append("rect")
-      .attr("x", 1)
-      .attr("y", d => yScale(d.k) + 5)
-      .attr("width", d => xScale(d.v))
-      .attr("height", yScale.bandwidth() - 10)
-      .style("fill", d => colorScale(d.k))
+
+    allBars.enter()
+        .append("rect")
+        .attr("x", 1)
+        .attr("y", d => yScale(d.k) + 5)
+        .attr("width", 1)
+      .merge(allBars)
+        .attr("height", yScale.bandwidth() - 10)
+        .style("fill", d => colorScale(d.k))
+      .transition()
+        .duration(1000)
+        .ease(d3easeLinear)
+        .attr("width", d => xScale(d.v))
+
   })
 
   return (
