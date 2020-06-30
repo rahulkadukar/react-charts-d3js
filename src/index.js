@@ -17,7 +17,7 @@ class ThemeHelper extends React.Component {
     // State also contains the updater function so it will
     // be passed down into the context provider
     this.state = {
-      theme: 'dark',
+      theme: 'light',
       _toggleTheme: this._toggleTheme,
     };
   }

@@ -12,18 +12,37 @@ import { schemeCategory10 } from 'd3-scale-chromatic'
 import { select as d3select } from 'd3-selection'
 import { transition } from "d3-transition"
 
+/* Import all configuration from BarChartConfig */
+import { config } from '../docs/BarChartConfig'
+const defaultConfig = {}
+config.docs.forEach((p) => {
+  defaultConfig[p.name] = p.value
+})
+
 const BarChart = (props) => {
-  console.log(props)
+  const opts = Object.assign({}, props, defaultConfig)
+  console.log(opts)
   const { data, theme } = props
   const node = useRef(null)
 
   useEffect(() => {
-    const width = window.innerWidth - 20
-    const height = 400
-    const margin = { top: 20, right: 20, bottom: 20, left: 60}
+    const margin = {
+      top: opts.marginTop,
+      right: opts.marginRight,
+      bottom: opts.marginBottom,
+      left: opts.marginLeft
+    }
+
+    const title = opts.title ? opts.title : ''
+    const titleHeight = opts.title.length === 0 ? 0 : 40
+    const parentElem = d3select(node.current).node()
+    const width = parentElem.getBoundingClientRect().width
+    const height = margin.top + margin.bottom +
+      (data.length * (opts.barWidth + opts.barPadding)) +
+      (4 * opts.barPadding) + titleHeight + 80
 
     const innerWidth = width - margin.right - margin.left
-    const innerHeight = height - margin.top - margin.bottom
+    const innerHeight = height - titleHeight - 80
 
     // xScale is for the length along x-axis
     const xScale = d3scaleLinear()
@@ -46,12 +65,20 @@ const BarChart = (props) => {
     svg.attr("width", width)
       .attr("height", height)
 
+    svg.append("text")
+      .attr("x", (width / 2))
+      .attr("y", 36)
+      .attr("text-anchor", "middle")
+      .style("font-size", "24px")
+      .style("text-decoration", "underline")
+      .text(title)
+
     const g = svg.append("g")
-      .attr("transform", `translate(${margin.left}, ${margin.top})`)
+      .attr("transform", `translate(${margin.left}, ${margin.top + titleHeight})`)
 
     g.append('g')
       .call(yAxis)
-      .style("font-size", "1.2em")
+      .style("font-size", "1em")
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
 
     g.append('g')
@@ -67,10 +94,10 @@ const BarChart = (props) => {
     allBars.enter()
         .append("rect")
         .attr("x", 1)
-        .attr("y", d => yScale(d.k) + 5)
+        .attr("y", d => yScale(d.k) + opts.barPadding)
         .attr("width", 1)
       .merge(allBars)
-        .attr("height", yScale.bandwidth() - 10)
+        .attr("height", opts.barWidth)
         .style("fill", d => colorScale(d.k))
       .transition()
         .duration(1000)
@@ -80,7 +107,7 @@ const BarChart = (props) => {
   })
 
   return (
-    <svg className="d3-class" ref={node} />
+    <svg width="100%" className="d3-class" ref={node} />
   )
 }
 

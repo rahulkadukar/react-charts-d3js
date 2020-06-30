@@ -7,6 +7,7 @@ body {
   height: 100%;
 }
 
-div.d3-class {
-  height: auto;
+svg.d3-class {
+  display: block;
+  border: 1px solid greenyellow;
 }
