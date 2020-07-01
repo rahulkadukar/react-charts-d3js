@@ -1,11 +1,17 @@
 import React from 'react'
-import BarChartDocs from "../docs/BarChartDocs"
 import BarChart from "../charts/BarChart"
-import styled from "styled-components"
+import {Link as ReactRouterLink, Route} from "react-router-dom"
+import ThemeContext from "../components/ThemeContext";
+import styled  from 'styled-components'
 
 const DivRow = styled.div`
   display: grid;
   grid-template-columns: 1fr;
+`
+
+const Link = styled(ReactRouterLink)`
+  color: white;
+  text-decoration: none;
 `
 
 const data = [
@@ -18,9 +24,15 @@ const data = [
 
 function Index() {
   return (
-    <DivRow>
-      <BarChartDocs />
-    </DivRow>
+    <ThemeContext.Consumer>
+      {(value) =>
+        <DivRow>
+          <Link to="/config/BarChartDocs">
+            <BarChart data={data} theme={value.theme} />
+          </Link>
+        </DivRow>
+      }
+    </ThemeContext.Consumer>
   )
 }
 

@@ -16,7 +16,7 @@ import {
 import { transition } from "d3-transition"
 
 /* Import all configuration from BarChartConfig */
-import { config } from '../docs/BarChartConfig'
+import { config } from '../config/BarChartConfig'
 const defaultConfig = {}
 config.docs.forEach((p) => {
   defaultConfig[p.name] = p.value
@@ -51,7 +51,7 @@ const BarChart = React.memo(function BarChartD3 (props) {
     // xScale is for the length along x-axis
     const xScale = d3scaleLinear()
       .domain([0, d3max(data.map((d) => d.v))])
-      .range([0, innerWidth])
+      .range([0, innerWidth]).nice()
     const xAxis = d3axisBottom(xScale)
 
     // yScale is for the names of the keys along y-axis
@@ -71,11 +71,11 @@ const BarChart = React.memo(function BarChartD3 (props) {
       .attr("height", height)
 
     svg.append("text")
-      .attr("x", (width / 2))
+      .attr("x", Math.round(width / 2))
       .attr("y", 36)
       .attr("text-anchor", "middle")
       .style("font-size", "24px")
-      .style("text-decoration", "underline")
+      .style("font-family", "Roboto")
       .text(title)
 
     const g = svg.append("g")
@@ -85,6 +85,7 @@ const BarChart = React.memo(function BarChartD3 (props) {
       .call(yAxis)
       .style("font-size", "1.2em")
       .attr("transform", `translate(${yAxisWidth},0)`)
+      .style("font-family", "Roboto")
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
 
     g.append('g')

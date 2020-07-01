@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import BarChart from "../charts/BarChart"
-import BarChart1 from "../charts/BarChart1"
 import ThemeContext from "../components/ThemeContext"
-import { config } from "./BarChartConfig"
+import { config } from "../config/BarChartConfig"
 import styled from 'styled-components'
 
 const data = [
@@ -11,8 +10,8 @@ const data = [
   {k: "Car", v: 11},
   {k: "Delta", v: 28},
   {k: "Endian", v: 14},
-  {k: "France", v: 257},
-  {k: "Green", v: 3}
+  {k: "France", v: 7},
+  {k: "Green", v: 42}
 ]
 
 const SubContainer = styled.div`
@@ -34,9 +33,15 @@ const Th = styled.th`
 `
 
 const Td = styled.td`
-  padding: 15px 10px;
+  padding: 10px 10px;
   font-size: 16px;
   border: 1px solid black;
+`
+
+const InputStyled = styled.input`
+  font-size: 16px;
+  border: 0px solid black;
+  width: 100px;
 `
 
 const APIConfig = (props) => {
@@ -51,8 +56,9 @@ const Input = (props) => {
     inputType = 'number'
   }
 
-  return <input type={inputType} value={props.value}
-    onChange={(e) => props.onchange(e.target.value)}
+  return <InputStyled type={inputType} value={props.value}
+    onChange={(e) => { props.onchange(e.target.value, props.name) }}
+    onBlur={() => props.onblur() }
   />
 }
 
@@ -87,7 +93,7 @@ function BarChartDocs() {
       if (p.name === id) {
         let changedVal = val
         if (p.type === 'Numeric') {
-          changedVal = parseInt(changedVal, 10)
+          changedVal = parseInt(changedVal, 10) || 0
         }
         p.value = changedVal
       }
@@ -102,25 +108,40 @@ function BarChartDocs() {
     <ThemeContext.Consumer>
       { (value) =>
       <div>
-        {
-          chartData.docs.map((p) => {
-            return (
-              <tr>
-                <Td>{p.name}</Td>
-                <Td>{p.desc}</Td>
-                <Td>
-                  <input
-                    key={p.name}
-                    value={p.value}
-                    onChange={e => handleChange(e.target.value, p.name)}
-                    onBlur={e => applyChange()} >
-                  </input>
-                </Td>
-              </tr>
-            )
-          })
-        }
-        <BarChart config={chartConfig} data={data} />
+        <APIConfig>
+          <Table width="100%">
+            <thead>
+            <tr>
+              <Th>Name</Th>
+              <Th>Description</Th>
+              <Th>Value</Th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr>
+              <Td>data</Td>
+              <Td>The input data that will be used to create the Bar Chart</Td>
+              <Td>Input data (array of objects)</Td>
+            </tr>
+            {
+              chartData.docs.map((p) => {
+                return (
+                  <tr>
+                    <Td>{p.name}</Td>
+                    <Td>{p.desc}</Td>
+                    <Td>
+                      <Input name={p.name} value={p.value} type={p.type}
+                        onchange={handleChange}
+                        onblur={applyChange} />
+                    </Td>
+                  </tr>
+                )
+              })
+            }
+            </tbody>
+          </Table>
+        </APIConfig>
+        <BarChart config={chartConfig} data={data} theme={value.theme} />
       </div>
       }
     </ThemeContext.Consumer>

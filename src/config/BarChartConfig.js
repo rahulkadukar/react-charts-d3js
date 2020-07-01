@@ -22,7 +22,7 @@ const config = {
     createProperty("marginTop", "Numeric",
       "The margin from the top of the element", 20),
     createProperty("title", "Text",
-      "The title to display on the chart", "Randomness")
+      "The title to display on the chart", "Title")
   ]
 }
 
