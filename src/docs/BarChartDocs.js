@@ -67,11 +67,18 @@ function BarChartDocs() {
   const [chartConfig, setConfig] = useState(configInfo)
 
   function applyChange() {
+    const existingConfig = Object.assign({}, chartConfig)
     const configInfo = {}
+    let changeDetected = false
     chartData.docs.forEach((p) => {
       configInfo[p.name] = p.value
+      if (configInfo[p.name] !== existingConfig[p.name]) {
+        changeDetected = true
+      }
     })
-    setConfig(configInfo)
+
+    if (changeDetected === true)
+      setConfig(configInfo)
   }
 
   function handleChange(val, id) {
@@ -113,7 +120,7 @@ function BarChartDocs() {
             )
           })
         }
-        <BarChart config={chartConfig} data={data} theme={value.theme}/>
+        <BarChart config={chartConfig} data={data} />
       </div>
       }
     </ThemeContext.Consumer>
