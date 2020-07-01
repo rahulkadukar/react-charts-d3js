@@ -9,7 +9,10 @@ import {
   scaleLinear as d3scaleLinear,
   scaleOrdinal as d3scaleOrdinal } from 'd3-scale'
 import { schemeCategory10 } from 'd3-scale-chromatic'
-import { select as d3select } from 'd3-selection'
+import {
+  create as d3create,
+  select as d3select
+} from 'd3-selection'
 import { transition } from "d3-transition"
 
 /* Import all configuration from BarChartConfig */
@@ -19,9 +22,8 @@ config.docs.forEach((p) => {
   defaultConfig[p.name] = p.value
 })
 
-const BarChart = (props) => {
-  const opts = Object.assign({}, props, defaultConfig)
-  console.log(opts)
+const BarChart = React.memo(function BarChartD3 (props) {
+  const opts = Object.assign({}, defaultConfig, props.config)
   const { data, theme } = props
   const node = useRef(null)
 
@@ -33,16 +35,18 @@ const BarChart = (props) => {
       left: opts.marginLeft
     }
 
-    const title = opts.title ? opts.title : ''
-    const titleHeight = opts.title.length === 0 ? 0 : 40
-    const parentElem = d3select(node.current).node()
-    const width = parentElem.getBoundingClientRect().width
-    const height = margin.top + margin.bottom +
-      (data.length * (opts.barWidth + opts.barPadding)) +
-      (4 * opts.barPadding) + titleHeight + 80
+    const temptitleHeight = 40
+    const yAxisWidth = 5 + (d3max(data.map((r) => r.k.toString().length)) * 12)
 
-    const innerWidth = width - margin.right - margin.left
-    const innerHeight = height - titleHeight - 80
+    const title = opts.title ? opts.title : ''
+    const titleHeight = opts.title.length === 0 ? 0 : temptitleHeight
+    const parentElem = d3select(node.current).node()
+    const width = parentElem.getBoundingClientRect().width - 4
+    const height = margin.top + margin.bottom + temptitleHeight +
+      (data.length * (opts.barWidth + opts.barPadding))
+
+    const innerWidth = width - margin.right - margin.left - yAxisWidth
+    const innerHeight = (data.length * (opts.barWidth + opts.barPadding))
 
     // xScale is for the length along x-axis
     const xScale = d3scaleLinear()
@@ -60,7 +64,8 @@ const BarChart = (props) => {
     const colorScale = d3scaleOrdinal(schemeCategory10)
 
     // Get the node that will be used for creating the chart
-    const svg = d3select(node.current);
+    const svg = d3select(node.current)
+    svg.selectAll('*').remove()
 
     svg.attr("width", width)
       .attr("height", height)
@@ -78,12 +83,13 @@ const BarChart = (props) => {
 
     g.append('g')
       .call(yAxis)
-      .style("font-size", "1em")
+      .style("font-size", "1.2em")
+      .attr("transform", `translate(${yAxisWidth},0)`)
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
 
     g.append('g')
       .call(xAxis)
-      .attr("transform", `translate(0, ${innerHeight})`)
+      .attr("transform", `translate(${yAxisWidth}, ${innerHeight})`)
       .style("font-size", "1em")
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
 
@@ -93,8 +99,8 @@ const BarChart = (props) => {
 
     allBars.enter()
         .append("rect")
-        .attr("x", 1)
-        .attr("y", d => yScale(d.k) + opts.barPadding)
+        .attr("x", 1 + yAxisWidth)
+        .attr("y", d => Math.round(yScale(d.k)) + (opts.barPadding / 2))
         .attr("width", 1)
       .merge(allBars)
         .attr("height", opts.barWidth)
@@ -102,13 +108,13 @@ const BarChart = (props) => {
       .transition()
         .duration(1000)
         .ease(d3easeLinear)
-        .attr("width", d => xScale(d.v))
+        .attr("width", d => Math.round(xScale(d.v)))
 
-  })
+  }, [props])
 
   return (
     <svg width="100%" className="d3-class" ref={node} />
   )
-}
+})
 
 export default BarChart

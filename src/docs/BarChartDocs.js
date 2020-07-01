@@ -1,16 +1,18 @@
 import React, { useState } from 'react'
 import BarChart from "../charts/BarChart"
+import BarChart1 from "../charts/BarChart1"
 import ThemeContext from "../components/ThemeContext"
 import { config } from "./BarChartConfig"
 import styled from 'styled-components'
-console.log(config)
+
 const data = [
-  {k: "A", v: 17},
-  {k: "B", v: 12},
-  {k: "C", v: 11},
-  {k: "D", v: 28},
-  {k: "E", v: 14},
-  {k: "F", v: 25}
+  {k: "Apple", v: 17},
+  {k: "Bravo", v: 12},
+  {k: "Car", v: 11},
+  {k: "Delta", v: 28},
+  {k: "Endian", v: 14},
+  {k: "France", v: 257},
+  {k: "Green", v: 3}
 ]
 
 const SubContainer = styled.div`
@@ -43,55 +45,75 @@ const APIConfig = (props) => {
   </SubContainer>
 }
 
-function BarChartDocs() {
-  //const [config, setConfig] = useState(config)
-
-  const BarChartConfig = (props) => {
-    return (
-      <APIConfig>
-        <Table width="100%">
-          <thead>
-            <tr>
-              <Th>Name</Th>
-              <Th>Description</Th>
-              <Th>Value</Th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <Td>data</Td>
-              <Td>The input data that will be used to create the Bar Chart</Td>
-              <Td>{JSON.stringify(data)}</Td>
-            </tr>
-            {
-              config.docs.map((p) => {
-                return (
-                  <tr>
-                    <Td>{p.name}</Td>
-                    <Td>{p.desc}</Td>
-                    <Td>{p.value}</Td>
-                  </tr>
-                )
-              })
-            }
-          </tbody>
-        </Table>
-      </APIConfig>
-    )  
+const Input = (props) => {
+  let inputType = 'text'
+  if (props.type === 'Numeric') {
+    inputType = 'number'
   }
 
-  const chartConfig = {}
+  return <input type={inputType} value={props.value}
+    onChange={(e) => props.onchange(e.target.value)}
+  />
+}
 
-  config.docs.forEach((p) => {
-    chartConfig[p.name] = p.value
-  })
-  
+const configInfo = {}
+config.docs.forEach((p) => {
+  const r = Object.assign({}, p)
+  configInfo[r.name] = r.value
+})
+
+function BarChartDocs() {
+  const [chartData, setData] = useState(config)
+  const [chartConfig, setConfig] = useState(configInfo)
+
+  function applyChange() {
+    const configInfo = {}
+    chartData.docs.forEach((p) => {
+      configInfo[p.name] = p.value
+    })
+    setConfig(configInfo)
+  }
+
+  function handleChange(val, id) {
+    const modifiedState = chartData.docs.map((c) => Object.assign({}, c))
+    modifiedState.forEach((p) => {
+      if (p.name === id) {
+        let changedVal = val
+        if (p.type === 'Numeric') {
+          changedVal = parseInt(changedVal, 10)
+        }
+        p.value = changedVal
+      }
+    })
+
+    const fullState = Object.assign({}, chartData)
+    fullState.docs = modifiedState
+    setData(fullState)
+  }
+
   return (
     <ThemeContext.Consumer>
       { (value) =>
       <div>
-        <BarChart config={chartConfig} data={data} theme={value.theme} />
-        <BarChartConfig /> 
+        {
+          chartData.docs.map((p) => {
+            return (
+              <tr>
+                <Td>{p.name}</Td>
+                <Td>{p.desc}</Td>
+                <Td>
+                  <input
+                    key={p.name}
+                    value={p.value}
+                    onChange={e => handleChange(e.target.value, p.name)}
+                    onBlur={e => applyChange()} >
+                  </input>
+                </Td>
+              </tr>
+            )
+          })
+        }
+        <BarChart config={chartConfig} data={data} theme={value.theme}/>
       </div>
       }
     </ThemeContext.Consumer>
