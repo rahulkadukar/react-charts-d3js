@@ -5,8 +5,8 @@ const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
   entry: "./src/index.js",
-  mode: "production",
-  devtool: 'source-map',
+  mode: "development",
+  devtool: 'eval-source-map',
   module: {
     rules: [
       {

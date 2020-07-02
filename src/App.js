@@ -15,6 +15,7 @@ import Index from './pages/Index'
 
 import Toggle from './components/Toggle'
 import BarChartDocs from "./docs/BarChartDocs"
+import PieChartDocs from "./docs/PieChartDocs"
 
 const Main = styled.div`
   background-color: ${props => props.theme === 'dark' ? '#303030' : '#FFFFFF'};
@@ -86,6 +87,7 @@ const App = (props) => {
             <Route exact path="/"><Index /></Route>
             <Route exact path="/about"><About /></Route>
             <Route exact path="/config/BarChartDocs"><BarChartDocs /></Route>
+            <Route exact path="/config/PieChartDocs"><PieChartDocs /></Route>
             <Route path="*"><Home /></Route>
           </Switch>
           <Footer>
