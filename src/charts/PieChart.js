@@ -1,21 +1,13 @@
 import React, { useEffect, useRef } from 'react'
-import { max as d3max } from 'd3-array'
-import {
-  axisBottom as d3axisBottom,
-  axisLeft as d3axisLeft } from 'd3-axis'
-import { easeLinear as d3easeLinear } from 'd3-ease'
 import { hierarchy as d3hierarchy,
   partition as d3partition } from "d3-hierarchy";
 import {
-  scaleBand as d3scaleBand,
-  scaleLinear as d3scaleLinear,
   scaleOrdinal as d3scaleOrdinal } from 'd3-scale'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import {
-  create as d3create,
   select as d3select
 } from 'd3-selection'
-import { arc as d3arc } from "d3-shape";
+import { arc as d3arc } from "d3-shape"
 import { transition } from "d3-transition"
 
 /* Import all configuration from PieChartConfig */
@@ -75,21 +67,33 @@ const PieChart = React.memo(function BarChartD3 (props) {
     */
     const root = d3hierarchy(data)
       .sum((d) => d.size)
+      .sort((a, b) => b.value - a.value)
 
     /* EXPLANATION
       https://bl.ocks.org/denjn5/e1cdbbe586ac31747b4a304f8f86efa5
      */
 
-    const widthOfArc = Math.floor((opts.radius / (1 + (opts.maxDepth < root.height ? opts.maxDepth : root.height)) * (root.height + 1)))
+    const widthOfArc = Math.floor((opts.radius /
+      (1 + (opts.maxDepth < root.height ? opts.maxDepth : root.height)) * (root.height + 1)))
     const partition = d3partition()
       .size([2 * Math.PI, widthOfArc]);
     partition(root)
 
     const arcGenerator = d3arc()
-      .startAngle(function (d) { return d.x0 })
-      .endAngle(function (d) { return d.x1 })
-      .innerRadius(function (d) { return d.y0 })
-      .outerRadius(function (d) { return d.y1 })
+      .startAngle(d => {d.x0s = d.x0; return d.x0})
+      .endAngle(d => {d.x1s = d.x1; return d.x1})
+      .innerRadius(d => d.y0)
+      .outerRadius(d => d.y1)
+
+    const arcGeneratorText = (d) => {
+      const { x0, x1, y0, y1 } = d
+      const halfRadius = Math.round((d.y1 - d.y0) / 2)
+      return arcGenerator({
+        x0: x0,
+        x1: x1,
+        y0: y1 - (1 * halfRadius) - 1,
+        y1: y1 - (1 * halfRadius)})
+    }
 
     const depthCalculator = d => {
       if (d.depth > opts.maxDepth || d.depth === 0) {
@@ -108,7 +112,15 @@ const PieChart = React.memo(function BarChartD3 (props) {
 
     const computeRotation = d => {
       let angle = ((d.x0 + d.x1) / Math.PI) * 90
-      return (angle < 120 || angle > 270) ? angle : angle + 180;
+      return (angle < 95 || angle > 270) ? "25%" : "75%"
+    }
+
+    const generateId = d => {
+      return `${d.data.name.replaceAll(" ", "_")}_${d.depth}_${d.height}`
+    }
+
+    const createHrefLink = d => {
+      return `#${generateId(d)}`
     }
 
     /* EXPLANATION
@@ -139,20 +151,68 @@ const PieChart = React.memo(function BarChartD3 (props) {
         .attr("class", "sbpie")
         .attr("display", depthCalculator)
         .attr("d", arcGenerator)
+        .attr("pointer-events", "all")
+        .on("click", clicked)
         .style('stroke', '#fff')
         .style("fill", d => colorScale(colorForSection(d)));
 
     g.selectAll(".node")
-      .append("text")
-      .attr("transform",(d) => {
-        return `translate(${arcGenerator.centroid(d)}) rotate(${computeRotation(d)})`
-      })
-      .attr("dx", "-20")
-      .attr("dy", "1em")
+      .append("path")
+      .attr("id", generateId)
+      .attr("d", arcGeneratorText)
+      .style("fill", d => colorScale(colorForSection(d)))
       .attr("display", depthCalculator)
-      .text(function(d) { return d.parent ? d.data.name : "" });
 
+    g.selectAll(".node")
+      .append("text")
+      .attr("display", depthCalculator)
+      .attr("dy", "8")
+      .append("textPath")
+      .attr("xlink:href", createHrefLink)
+      .attr("text-anchor", "middle")
+      .attr("startOffset", computeRotation)
+      .text(d => d.data.name)
+
+    function clicked(p) {
+      console.log('I AM HERE')
+    }
+    /*
+      parent.datum(p.parent || root);
+
+      root.each(d => d.target = {
+        x0: Math.max(0, Math.min(1, (d.x0 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        x1: Math.max(0, Math.min(1, (d.x1 - p.x0) / (p.x1 - p.x0))) * 2 * Math.PI,
+        y0: Math.max(0, d.y0 - p.depth),
+        y1: Math.max(0, d.y1 - p.depth)
+      });
+
+      const t = g.transition().duration(750);
+
+      // Transition the data on all arcs, even the ones that aren’t visible,
+      // so that if this transition is interrupted, entering arcs will start
+      // the next transition from the desired position.
+      path.transition(t)
+          .tween("data", d => {
+            const i = d3.interpolate(d.current, d.target);
+            return t => d.current = i(t);
+          })
+          .filter(function(d) {
+            return +this.getAttribute("fill-opacity") || arcVisible(d.target);
+          })
+          .attr("fill-opacity", d => arcVisible(d.target) ? (d.children ? 0.6 : 0.4) : 0)
+          .attrTween("d", d => () => arc(d.current));
+
+      label.filter(function(d) {
+        return +this.getAttribute("fill-opacity") || labelVisible(d.target);
+      }).transition(t)
+          .attr("fill-opacity", d => +labelVisible(d.target))
+          .attrTween("transform", d => () => labelTransform(d.current));
+    }
+
+     */
   })
+
+
 
   return (
     <svg width="100%" className="d3-class" ref={node} />

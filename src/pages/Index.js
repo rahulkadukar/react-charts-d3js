@@ -5,6 +5,9 @@ import {Link as ReactRouterLink, Route} from "react-router-dom"
 import ThemeContext from "../components/ThemeContext";
 import styled  from 'styled-components'
 
+import { data as barData } from '../config/BarChartConfig'
+import { data as pieData } from '../config/PieChartConfig'
+
 const DivRow = styled.div`
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -15,24 +18,16 @@ const Link = styled(ReactRouterLink)`
   text-decoration: none;
 `
 
-const data = [
-  {k: "A", v: 17},
-  {k: "B", v: 12},
-  {k: "C", v: 11},
-  {k: "D", v: 28},
-  {k: "E", v: 14}
-]
-
 function Index() {
   return (
     <ThemeContext.Consumer>
       {(value) =>
         <DivRow>
           <Link to="/config/BarChartDocs">
-            <BarChart data={data} theme={value.theme} />
+            <BarChart data={barData} theme={value.theme} />
           </Link>
           <Link to="/config/PieChartDocs">
-            <PieChart theme={value.theme} />
+            <PieChart data={pieData} theme={value.theme} />
           </Link>
         </DivRow>
       }

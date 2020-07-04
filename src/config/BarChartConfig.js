@@ -6,6 +6,15 @@ const createProperty = (name, type, desc, value) => {
     value,
   }
 }
+const data = [
+  {k: "Apple", v: 17},
+  {k: "Bravo", v: 12},
+  {k: "Car", v: 11},
+  {k: "Delta", v: 28},
+  {k: "Endian", v: 14},
+  {k: "France", v: 7},
+  {k: "Green", v: 42}
+]
 
 const config = {
   "docs": [
@@ -27,5 +36,6 @@ const config = {
 }
 
 module.exports = {
-  config
+  config,
+  data,
 }

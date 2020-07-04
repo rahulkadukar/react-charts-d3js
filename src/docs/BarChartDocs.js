@@ -1,18 +1,8 @@
 import React, { useState } from 'react'
 import BarChart from "../charts/BarChart"
 import ThemeContext from "../components/ThemeContext"
-import { config } from "../config/BarChartConfig"
+import { config, data } from "../config/BarChartConfig"
 import styled from 'styled-components'
-
-const data = [
-  {k: "Apple", v: 17},
-  {k: "Bravo", v: 12},
-  {k: "Car", v: 11},
-  {k: "Delta", v: 28},
-  {k: "Endian", v: 14},
-  {k: "France", v: 7},
-  {k: "Green", v: 42}
-]
 
 const SubContainer = styled.div`
   display: flex;
