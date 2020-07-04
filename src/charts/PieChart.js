@@ -87,12 +87,12 @@ const PieChart = React.memo(function BarChartD3 (props) {
 
     const arcGeneratorText = (d) => {
       const { x0, x1, y0, y1 } = d
-      const halfRadius = Math.round((d.y1 - d.y0) / 2)
+      const halfRadius = Math.round((y1 - y0) / 2)
       return arcGenerator({
         x0: x0,
         x1: x1,
-        y0: y1 - (1 * halfRadius) - 1,
-        y1: y1 - (1 * halfRadius)})
+        y0: y1 - (halfRadius) - 1,
+        y1: y1 - (halfRadius)})
     }
 
     const depthCalculator = d => {
@@ -116,7 +116,8 @@ const PieChart = React.memo(function BarChartD3 (props) {
     }
 
     const generateId = d => {
-      return `${d.data.name.replaceAll(" ", "_")}_${d.depth}_${d.height}`
+      console.log(d.data.name)
+      return `${d.data.name}_${d.depth}_${d.height}`
     }
 
     const createHrefLink = d => {

@@ -1,11 +1,13 @@
 import React from 'react'
 import BarChart from "../charts/BarChart"
+import LineChart from "../charts/LineChart"
 import PieChart from "../charts/PieChart"
 import {Link as ReactRouterLink, Route} from "react-router-dom"
 import ThemeContext from "../components/ThemeContext";
 import styled  from 'styled-components'
 
 import { data as barData } from '../config/BarChartConfig'
+import { data as lineData } from '../config/LineChartConfig'
 import { data as pieData } from '../config/PieChartConfig'
 
 const DivRow = styled.div`
@@ -28,6 +30,9 @@ function Index() {
           </Link>
           <Link to="/config/PieChartDocs">
             <PieChart data={pieData} theme={value.theme} />
+          </Link>
+          <Link to="/config/LineChartDocs">
+            <LineChart data={lineData} theme={value.theme} />
           </Link>
         </DivRow>
       }
