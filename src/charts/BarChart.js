@@ -10,7 +10,6 @@ import {
   scaleOrdinal as d3scaleOrdinal } from 'd3-scale'
 import { schemeCategory10 } from 'd3-scale-chromatic'
 import {
-  create as d3create,
   select as d3select
 } from 'd3-selection'
 import { transition } from "d3-transition"

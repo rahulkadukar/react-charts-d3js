@@ -114,9 +114,9 @@ function BarChartDocs() {
               <Td>Input data (array of objects)</Td>
             </tr>
             {
-              chartData.docs.map((p) => {
+              chartData.docs.map((p, i) => {
                 return (
-                  <tr>
+                  <tr key={i}>
                     <Td>{p.name}</Td>
                     <Td>{p.desc}</Td>
                     <Td>

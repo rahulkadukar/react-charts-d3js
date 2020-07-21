@@ -23,7 +23,7 @@ const Th = styled.th`
 `
 
 const Td = styled.td`
-  padding: 10px 10px;
+  padding: 2px 10px;
   font-size: 16px;
   border: 1px solid black;
 `
