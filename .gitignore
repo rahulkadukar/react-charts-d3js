@@ -1,5 +1,6 @@
 *.iml
 *.private.json
+*.swp
 .idea/
 logs/
 node_modules/
