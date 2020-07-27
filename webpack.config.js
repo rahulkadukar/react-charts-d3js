@@ -4,8 +4,17 @@ const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPl
 const TerserPlugin = require('terser-webpack-plugin')
 
 module.exports = {
-  entry: "./src/index.js",
+  entry: [
+    "webpack-dev-server/client?http://localhost:3000",
+    "./src/index.js"
+  ],
   mode: "development",
+  devServer: {
+    contentBase: path.join(__dirname, "public/"),
+    port: 3000,
+    publicPath: "http://localhost:3000/dist",
+    hotOnly: true
+  },
   devtool: 'eval-source-map',
   module: {
     rules: [
@@ -35,5 +44,8 @@ module.exports = {
     new BundleAnalyzerPlugin({
       analyzerMode: 'json'
     })
-  ]
+  ],
+  node: {
+    fs: "empty"
+  }
 };

@@ -1,4 +1,5 @@
 *.iml
+*.private.json
 .idea/
 logs/
 node_modules/

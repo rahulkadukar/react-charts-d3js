@@ -1,3 +1,5 @@
+const amdData = require('./amd.json')
+
 const createProperty = (name, type, desc, value) => {
   return {
     name,
@@ -20,7 +22,10 @@ const generateData = (n) => {
   return data
 }
 
-const data = generateData(4000)
+const data = amdData.map((r) => { return {
+  k: new Date(r.k).toISOString().slice(0,10),
+  v: parseFloat(r.v)
+}})
 
 const config = {
   "docs": [

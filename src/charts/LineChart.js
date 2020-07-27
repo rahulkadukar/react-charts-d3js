@@ -15,6 +15,8 @@ import {
   d3select
 } from '../config/D3Config'
 
+import { timeDay as d3TimeMonth } from "d3-time";
+
 import {schemeCategory10} from 'd3-scale-chromatic'
 /* Import all configuration from LineChartConfig */
 import {config} from '../config/LineChartConfig'
@@ -37,7 +39,7 @@ const LineChart = React.memo(function BarChartD3 (props) {
       .extent([[0, 0], [opts._innerWidth, opts.slidingWindowHeight]])
 
     opts._slidingBrush = brush
-    opts._slidingBrush.on("end", updateChart1)
+    opts._slidingBrush.on("end", updateChartBrush)
 
     someSVG.append("g")
       .attr("class", "slidingBrush")
@@ -53,6 +55,7 @@ const LineChart = React.memo(function BarChartD3 (props) {
   function createSlidingWindow() {
     // Get the node that will be used for creating the sliding window
     const svg = d3select(snode.current)
+    svg.selectAll('*').remove()
     svg.attr("width", opts._innerWidth)
       .attr("height", opts.slidingWindowHeight)
       .attr("transform", `translate(${opts._margin.left + opts._yAxisWidth}, 0)`)
@@ -68,7 +71,7 @@ const LineChart = React.memo(function BarChartD3 (props) {
       .style("color", `${theme === 'dark' ? 'white' : 'black'}`)
   }
 
-  function updateChart1() {
+  function updateChartBrush() {
     const selectionRange = d3event.selection
 
     if (selectionRange && selectionRange !== [0,0]) {
@@ -116,13 +119,13 @@ const LineChart = React.memo(function BarChartD3 (props) {
   }
 
 
-  const drawChart = (lineData, someVar) => {
-    if (!someVar) {
+  const drawChart = (lineData, noBrushUpdate) => {
+    if (!noBrushUpdate) {
       const minMaxTime = d3extent(lineData.map(d => new Date(`${d.k}T00:00:00`)))
 
       updateBrush(opts._slidingSVG,
-          Math.floor(opts._xScaleSliding(minMaxTime[0])),
-          Math.floor(opts._xScaleSliding(minMaxTime[1])))
+        Math.floor(opts._xScaleSliding(minMaxTime[0])),
+        Math.floor(opts._xScaleSliding(minMaxTime[1])))
     }
 
     const brush = d3brushX()
@@ -133,7 +136,7 @@ const LineChart = React.memo(function BarChartD3 (props) {
     const minDate = d3min(lineData.map((d) => d.k))
     const xScale = d3scaleUtc()
       .domain(d3extent(lineData.map(d => new Date(`${d.k}T00:00:00`))))
-      .range([0, opts._innerWidth]).nice()
+      .range([0, opts._innerWidth]).nice(d3TimeMonth)
     opts._xScale = xScale
     const xAxis = d3axisBottom(xScale)
 
@@ -238,7 +241,7 @@ const LineChart = React.memo(function BarChartD3 (props) {
 
     const xScaleSliding = d3scaleUtc()
       .domain(d3extent(data.map(d => new Date(`${d.k}T00:00:00`))))
-      .range([0, opts._innerWidth]).nice()
+      .range([0, opts._innerWidth]).nice(d3TimeMonth)
 
     opts._xScaleSliding = xScaleSliding
 

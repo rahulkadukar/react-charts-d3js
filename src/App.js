@@ -1,4 +1,5 @@
 import React, { Component} from 'react'
+import {hot} from "react-hot-loader/root";
 import ThemeContext from './components/ThemeContext'
 import {
   Link as ReactRouterLink,

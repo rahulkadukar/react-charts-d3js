@@ -1,27 +1,27 @@
 {
-  "name": "react-charts-d3",
-  "version": "1.0.0",
+  "name": "react-charts-d3js",
+  "version": "1.0.1",
   "description": "React charts made with D3",
   "main": "index.js",
   "scripts": {
     "build": "npm install && webpack --mode production --progress",
     "dev": "webpack --watch --display-modules",
     "lint": "eslint src/",
-    "server": "node index.js",
+    "server": "webpack-dev-server --hot",
     "start": "npm run build && node index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "watch": "webpack --watch"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/rahulkadukar/react-charts-d3.git"
+    "url": "git+https://github.com/rahulkadukar/react-charts-d3js.git"
   },
   "author": "Rahul Kadukar",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/rahulkadukar/react-charts-d3/issues"
+    "url": "https://github.com/rahulkadukar/react-charts-d3js/issues"
   },
-  "homepage": "https://github.com/rahulkadukar/react-charts-d3#readme",
+  "homepage": "https://github.com/rahulkadukar/react-charts-d3js#readme",
   "devDependencies": {
     "@babel/cli": "^7.10.3",
     "@babel/core": "^7.10.3",
@@ -33,6 +33,7 @@
     "eslint": "^6.8.0",
     "eslint-plugin-react": "^7.20.0",
     "eslint-plugin-react-hooks": "^4.0.4",
+    "react-hot-loader": "^4.12.21",
     "style-loader": "^0.23.1",
     "terser-webpack-plugin": "^3.0.6",
     "webpack": "^4.43.0",
@@ -59,6 +60,7 @@
     "react": "^16.12.0",
     "react-dom": "^16.12.0",
     "react-router-dom": "^5.2.0",
-    "styled-components": "^4.4.1"
+    "styled-components": "^4.4.1",
+    "webpack-dev-server": "^3.11.0"
   }
 }

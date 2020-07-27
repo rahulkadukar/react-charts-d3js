@@ -61,6 +61,7 @@ config.docs.forEach((p) => {
 function BarChartDocs() {
   const [chartData, setData] = useState(config)
   const [chartConfig, setConfig] = useState(configInfo)
+  let x = 123
 
   function applyChange() {
     const existingConfig = Object.assign({}, chartConfig)
@@ -103,7 +104,7 @@ function BarChartDocs() {
             <thead>
             <tr>
               <Th>Name</Th>
-              <Th>Description</Th>
+              <Th>Random</Th>
               <Th>Value</Th>
             </tr>
             </thead>
@@ -116,10 +117,10 @@ function BarChartDocs() {
             {
               chartData.docs.map((p) => {
                 return (
-                  <tr>
-                    <Td>{p.name}</Td>
-                    <Td>{p.desc}</Td>
-                    <Td>
+                  <tr key={++x}>
+                    <Td key={++x}>{p.name}</Td>
+                    <Td key={++x}>{p.desc}</Td>
+                    <Td key={++x}>
                       <Input name={p.name} value={p.value} type={p.type}
                         onchange={handleChange}
                         onblur={applyChange} />
