@@ -3,5 +3,5 @@
 ![Webpack](https://img.shields.io/badge/webpack-v4.41.6-green)
 ![Styled Components](https://img.shields.io/badge/styled--components-v4.4.1-orange)
 
-# react-charts-d3
+# react-charts-d3js
 Charts made in React using d3
